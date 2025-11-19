@@ -1,20 +1,21 @@
 {
-  "name": "inaturalistjs",
-  "version": "2.9.0",
-  "description": "inaturalistjs",
-  "author": "iNaturalist",
+  "name": "minkajs",
+  "version": "1.0.0",
+  "description": "minkajs",
+  "author": "Minka",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/inaturalist/inaturalistjs.git"
+    "url": "git+https://github.com/minka-sdg/minkajs"
   },
   "bugs": {
-    "url": "https://github.com/inaturalist/inaturalistjs/issues"
+    "url": "https://github.com/minka-sdg/minkajs/issues"
   },
-  "homepage": "https://github.com/inaturalist/inaturalistjs#readme",
-  "main": "./lib/inaturalistjs.js",
-  "browser": "./build/inaturalistjs.js",
+  "homepage": "https://github.com/minka-sdg/minkajs#readme",
+  "main": "./lib/minkajs.js",
+  "browser": "./build/minkajs.js",
   "scripts": {
+    "lint": "npx eslint .",
     "test": "NODE_ENV=test mocha --recursive --exit",
     "coverage": "NODE_ENV=test nyc --reporter=lcov --reporter=text-summary npm run test",
     "webpack": "webpack",

@@ -6,11 +6,11 @@ describe( "Sites", ( ) => {
   describe( "fetch", ( ) => {
     const stub = {
       id: 1,
-      name: "iNaturalist"
+      name: "Minka"
     };
     const stub1 = {
       id: 2,
-      name: "NaturaLista"
+      name: "Minka 2"
     };
     it( "should return sites", done => {
       nock( "http://localhost:4000" )
