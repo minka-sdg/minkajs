@@ -466,8 +466,8 @@ var MinkaAPI = /*#__PURE__*/function () {
       var legacyEnv = MinkaAPI.legacyEnvConfig(config);
       var envURLConfig = legacyEnv.apiURL || util.browserMetaTagContent("config:minka_api_url") || util.nodeENV("API_URL");
       var envWriteURLConfig = legacyEnv.writeApiURL || util.browserMetaTagContent("config:minka_write_api_url") || util.nodeENV("WRITE_API_URL");
-      MinkaAPI.apiURL = config.apiURL || envURLConfig || "https://api.minka.org/v1";
-      MinkaAPI.writeApiURL = config.writeApiURL || envWriteURLConfig || envURLConfig || config.apiURL || "https://www.minka.org";
+      MinkaAPI.apiURL = config.apiURL || envURLConfig || "https://api.minka-sdg.org/v1";
+      MinkaAPI.writeApiURL = config.writeApiURL || envWriteURLConfig || envURLConfig || config.apiURL || "https://minka-sdg.org";
     }
   }, {
     key: "legacyEnvConfig",
@@ -3983,7 +3983,6 @@ var observationPhotos = /*#__PURE__*/function () {
         method: "PUT"
       });
 
-      options.method = "PUT";
       return MinkaAPI.upload("observation_photos/:id", params, options);
     }
   }, {
@@ -4134,9 +4133,10 @@ var observations = /*#__PURE__*/function () {
   }, {
     key: "review",
     value: function review(params, options) {
-      var p = _objectSpread({}, params);
+      var p = _objectSpread(_objectSpread({}, params), {}, {
+        reviewed: "true"
+      });
 
-      p.reviewed = "true";
       return MinkaAPI.post("observations/:id/review", p, options);
     }
   }, {
