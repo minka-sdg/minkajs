@@ -1,7 +1,7 @@
-const iNaturalistAPI = require( "../lib/inaturalist_api" );
+const MinkaAPI = require( "../lib/minka_api" );
 
 beforeEach( ( ) => {
-  iNaturalistAPI.setConfig( {
+  MinkaAPI.setConfig( {
     apiURL: "http://localhost:4000/v1",
     writeApiURL: "http://localhost:3000"
   } );

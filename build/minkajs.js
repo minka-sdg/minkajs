@@ -4,10 +4,10 @@
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 /* eslint global-require: 0 */
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 module.exports = {
-  setConfig: iNaturalistAPI.setConfig,
+  setConfig: MinkaAPI.setConfig,
   annotations: __webpack_require__(11),
   announcements: __webpack_require__(13),
   authorized_applications: __webpack_require__(15),
@@ -101,14 +101,14 @@ var rison = __webpack_require__(7);
 
 var util = __webpack_require__(8);
 
-var INaturalistAPIResponse = __webpack_require__(9);
+var MinkaAPIResponse = __webpack_require__(9);
 
-var iNaturalistAPI = /*#__PURE__*/function () {
-  function iNaturalistAPI() {
-    _classCallCheck(this, iNaturalistAPI);
+var MinkaAPI = /*#__PURE__*/function () {
+  function MinkaAPI() {
+    _classCallCheck(this, MinkaAPI);
   }
 
-  _createClass(iNaturalistAPI, null, [{
+  _createClass(MinkaAPI, null, [{
     key: "fetch",
     value: function fetch(route, ids, p, options) {
       var fetchIDs = ids;
@@ -118,7 +118,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         fetchIDs = [fetchIDs];
       }
 
-      var apiToken = iNaturalistAPI.apiToken(options);
+      var apiToken = MinkaAPI.apiToken(options);
       var headers = apiToken ? {
         Authorization: apiToken
       } : {};
@@ -131,7 +131,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       }
 
       var query = _typeof(params) === "object" && Object.keys(params).length > 0 ? "?".concat(querystring.stringify(params)) : "";
-      var baseURL = "".concat(iNaturalistAPI.apiURL, "/").concat(route, "/").concat(fetchIDs.join(","));
+      var baseURL = "".concat(MinkaAPI.apiURL, "/").concat(route, "/").concat(fetchIDs.join(","));
       var urlWithQueryParams = "".concat(baseURL).concat(query);
       var fetch;
 
@@ -151,7 +151,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         });
       }
 
-      return fetch.then(iNaturalistAPI.thenText).then(iNaturalistAPI.thenJson).then(iNaturalistAPI.thenWrap);
+      return fetch.then(MinkaAPI.thenText).then(MinkaAPI.thenJson).then(MinkaAPI.thenWrap);
     } // Note, this generally assumes that all GET requests go to the Node API. If
     // you want to GET something from the Rails API, call this with
     // useWriteApi: true
@@ -161,28 +161,28 @@ var iNaturalistAPI = /*#__PURE__*/function () {
     value: function get(route, params, opts) {
       var options = _objectSpread({}, opts || {});
 
-      var interpolated = iNaturalistAPI.interpolateRouteParams(route, params);
+      var interpolated = MinkaAPI.interpolateRouteParams(route, params);
 
       if (interpolated.err) {
         return interpolated.err;
       }
 
       var thisRoute = interpolated.route;
-      var apiToken = options.useAuth ? iNaturalistAPI.apiToken(options) : null;
+      var apiToken = options.useAuth ? MinkaAPI.apiToken(options) : null;
 
       var headers = _objectSpread(_objectSpread({}, options.headers), {}, {
         Accept: "application/json",
         // DO NOT OMIT! Without this, fetch in React Native on Android will not
         // even execute the request
         "Content-Type": "application/json",
-        "X-Via": "inaturalistjs"
+        "X-Via": "minkajs"
       });
 
       if (apiToken) {
         headers.Authorization = apiToken;
       }
 
-      var host = options.useWriteApi ? iNaturalistAPI.writeApiURL : iNaturalistAPI.apiURL;
+      var host = options.useWriteApi ? MinkaAPI.writeApiURL : MinkaAPI.apiURL;
       var baseURL = "".concat(host, "/").concat(thisRoute);
       var remainingParams = interpolated.remainingParams;
       var fieldsObject;
@@ -213,7 +213,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         });
       }
 
-      return fetch.then(iNaturalistAPI.thenText).then(iNaturalistAPI.thenJson).then(iNaturalistAPI.thenWrap);
+      return fetch.then(MinkaAPI.thenText).then(MinkaAPI.thenJson).then(MinkaAPI.thenWrap);
     }
   }, {
     key: "post",
@@ -223,7 +223,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       var params = _objectSpread({}, p || {}); // interpolate path params, e.g. /:id => /1
 
 
-      var interpolated = iNaturalistAPI.interpolateRouteParams(route, params);
+      var interpolated = MinkaAPI.interpolateRouteParams(route, params);
 
       if (interpolated.err) {
         return interpolated.err;
@@ -234,7 +234,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       var headers = _objectSpread(_objectSpread({}, options.headers), {}, {
         Accept: "application/json",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE, HEAD",
-        "X-Via": "inaturalistjs"
+        "X-Via": "minkajs"
       });
 
       if (options.user_agent) {
@@ -246,8 +246,8 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       } // set up authentication
 
 
-      var csrf = iNaturalistAPI.csrf();
-      var apiToken = iNaturalistAPI.apiToken(options);
+      var csrf = MinkaAPI.csrf();
+      var apiToken = MinkaAPI.apiToken(options);
 
       if (apiToken) {
         headers.Authorization = apiToken;
@@ -256,7 +256,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       } // get the right host to send requests
 
 
-      var host = iNaturalistAPI.methodHostPrefix(options); // make the request
+      var host = MinkaAPI.methodHostPrefix(options); // make the request
 
       var body;
 
@@ -273,7 +273,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         // so flatten arrays into "arr[0]" and objects into "obj[prop]"
 
 
-        params = iNaturalistAPI.flattenMultipartParams(interpolated.remainingParams);
+        params = MinkaAPI.flattenMultipartParams(interpolated.remainingParams);
         Object.keys(params).forEach(function (k) {
           // FormData params can include options like file upload sizes
           if (params[k] && params[k].type === "custom" && params[k].value) {
@@ -305,7 +305,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
       }
 
       var url = "".concat(host, "/").concat(thisRoute).concat(query);
-      return localFetch(url, fetchOpts).then(iNaturalistAPI.thenText).then(iNaturalistAPI.thenJson);
+      return localFetch(url, fetchOpts).then(MinkaAPI.thenText).then(MinkaAPI.thenJson);
     } // a variant of post using the http PUT method
 
   }, {
@@ -317,7 +317,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         method: "head"
       });
 
-      return iNaturalistAPI.post(route, params, options);
+      return MinkaAPI.post(route, params, options);
     } // a variant of post using the http PUT method
 
   }, {
@@ -329,7 +329,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         method: "put"
       });
 
-      return iNaturalistAPI.post(route, params, options);
+      return MinkaAPI.post(route, params, options);
     } // a variant of post using the http DELETE method
 
   }, {
@@ -341,7 +341,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         method: "delete"
       });
 
-      return iNaturalistAPI.post(route, params, options);
+      return MinkaAPI.post(route, params, options);
     }
   }, {
     key: "upload",
@@ -355,7 +355,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         upload: true
       });
 
-      return iNaturalistAPI.post(route, params, options);
+      return MinkaAPI.post(route, params, options);
     }
   }, {
     key: "methodHostPrefix",
@@ -368,7 +368,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         return opts.apiURL;
       }
 
-      return "".concat(iNaturalistAPI.writeApiURL);
+      return "".concat(MinkaAPI.writeApiURL);
     }
   }, {
     key: "csrf",
@@ -384,7 +384,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
     key: "apiToken",
     value: function apiToken() {
       var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var token = util.browserMetaTagContent("inaturalist-api-token");
+      var token = util.browserMetaTagContent("minka-api-token");
 
       if (token) {
         return token;
@@ -423,7 +423,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
         return response;
       }
 
-      return new INaturalistAPIResponse(response);
+      return new MinkaAPIResponse(response);
     } // flatten nested objects like arrays into "arr[0]" and objects into "obj[prop]"
 
   }, {
@@ -442,7 +442,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
           var flattenedParams = {};
           Object.keys(params).forEach(function (k) {
             var newPrefix = keyPrefix ? "".concat(keyPrefix, "[").concat(k, "]") : k;
-            Object.assign(flattenedParams, iNaturalistAPI.flattenMultipartParams(params[k], newPrefix));
+            Object.assign(flattenedParams, MinkaAPI.flattenMultipartParams(params[k], newPrefix));
           });
           return flattenedParams;
         }
@@ -451,7 +451,7 @@ var iNaturalistAPI = /*#__PURE__*/function () {
           var _flattenedParams = {};
           params.forEach(function (value, index) {
             var newPrefix = "".concat(keyPrefix, "[").concat(index, "]");
-            Object.assign(_flattenedParams, iNaturalistAPI.flattenMultipartParams(params[index], newPrefix));
+            Object.assign(_flattenedParams, MinkaAPI.flattenMultipartParams(params[index], newPrefix));
           });
           return _flattenedParams;
         }
@@ -463,20 +463,20 @@ var iNaturalistAPI = /*#__PURE__*/function () {
     key: "setConfig",
     value: function setConfig() {
       var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var legacyEnv = iNaturalistAPI.legacyEnvConfig(config);
-      var envURLConfig = legacyEnv.apiURL || util.browserMetaTagContent("config:inaturalist_api_url") || util.nodeENV("API_URL");
-      var envWriteURLConfig = legacyEnv.writeApiURL || util.browserMetaTagContent("config:inaturalist_write_api_url") || util.nodeENV("WRITE_API_URL");
-      iNaturalistAPI.apiURL = config.apiURL || envURLConfig || "https://api.inaturalist.org/v1";
-      iNaturalistAPI.writeApiURL = config.writeApiURL || envWriteURLConfig || envURLConfig || config.apiURL || "https://www.inaturalist.org";
+      var legacyEnv = MinkaAPI.legacyEnvConfig(config);
+      var envURLConfig = legacyEnv.apiURL || util.browserMetaTagContent("config:minka_api_url") || util.nodeENV("API_URL");
+      var envWriteURLConfig = legacyEnv.writeApiURL || util.browserMetaTagContent("config:minka_write_api_url") || util.nodeENV("WRITE_API_URL");
+      MinkaAPI.apiURL = config.apiURL || envURLConfig || "https://api.minka-sdg.org/v1";
+      MinkaAPI.writeApiURL = config.writeApiURL || envWriteURLConfig || envURLConfig || config.apiURL || "https://minka-sdg.org";
     }
   }, {
     key: "legacyEnvConfig",
     value: function legacyEnvConfig(config) {
       var oldVariables = {
-        envHostConfig: config.apiHost || util.browserMetaTagContent("config:inaturalist_api_host") || util.nodeENV("API_HOST"),
-        envWriteHostConfig: config.writeApiHost || util.browserMetaTagContent("config:inaturalist_write_api_host") || util.nodeENV("WRITE_API_HOST"),
-        envApiHostSSL: config.apiHostSSL || (util.browserMetaTagContent("config:inaturalist_api_host_ssl") || util.nodeENV("API_HOST_SSL")) === "true",
-        envWriteHostSSL: config.writeApiHostSSL || (util.browserMetaTagContent("config:inaturalist_write_host_ssl") || util.nodeENV("WRITE_HOST_SSL")) === "true"
+        envHostConfig: config.apiHost || util.browserMetaTagContent("config:minka_api_host") || util.nodeENV("API_HOST"),
+        envWriteHostConfig: config.writeApiHost || util.browserMetaTagContent("config:minka_write_api_host") || util.nodeENV("WRITE_API_HOST"),
+        envApiHostSSL: config.apiHostSSL || (util.browserMetaTagContent("config:minka_api_host_ssl") || util.nodeENV("API_HOST_SSL")) === "true",
+        envWriteHostSSL: config.writeApiHostSSL || (util.browserMetaTagContent("config:minka_write_host_ssl") || util.nodeENV("WRITE_HOST_SSL")) === "true"
       };
       var updatedVariables = {};
 
@@ -542,11 +542,11 @@ var iNaturalistAPI = /*#__PURE__*/function () {
     }
   }]);
 
-  return iNaturalistAPI;
+  return MinkaAPI;
 }();
 
-iNaturalistAPI.setConfig();
-module.exports = iNaturalistAPI;
+MinkaAPI.setConfig();
+module.exports = MinkaAPI;
 
 /***/ }),
 /* 2 */
@@ -1978,21 +1978,21 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 var Model = __webpack_require__(10);
 
-var iNaturalistAPIResponse = /*#__PURE__*/function (_Model) {
-  _inherits(iNaturalistAPIResponse, _Model);
+var MinkaAPIResponse = /*#__PURE__*/function (_Model) {
+  _inherits(MinkaAPIResponse, _Model);
 
-  var _super = _createSuper(iNaturalistAPIResponse);
+  var _super = _createSuper(MinkaAPIResponse);
 
-  function iNaturalistAPIResponse() {
-    _classCallCheck(this, iNaturalistAPIResponse);
+  function MinkaAPIResponse() {
+    _classCallCheck(this, MinkaAPIResponse);
 
     return _super.apply(this, arguments);
   }
 
-  return _createClass(iNaturalistAPIResponse);
+  return _createClass(MinkaAPIResponse);
 }(Model);
 
-module.exports = iNaturalistAPIResponse;
+module.exports = MinkaAPIResponse;
 
 /***/ }),
 /* 10 */
@@ -2053,7 +2053,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Annotation = __webpack_require__(12);
 
@@ -2065,34 +2065,22 @@ var annotations = /*#__PURE__*/function () {
   _createClass(annotations, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("annotations", params, options).then(Annotation.typifyInstanceResponse);
+      return MinkaAPI.post("annotations", params, options).then(Annotation.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("annotations/:id", params, options);
+      return MinkaAPI["delete"]("annotations/:id", params, options);
     }
   }, {
     key: "vote",
     value: function vote(params, options) {
-      var endpoint = "votes/vote/annotation/:id";
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        endpoint = "annotations/:id/vote";
-      }
-
-      return iNaturalistAPI.post(endpoint, params, options).then(Annotation.typifyInstanceResponse);
+      return MinkaAPI.post("votes/vote/annotation/:id", params, options).then(Annotation.typifyInstanceResponse);
     }
   }, {
     key: "unvote",
     value: function unvote(params, options) {
-      var endpoint = "votes/unvote/annotation/:id";
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        endpoint = "annotations/:id/vote";
-      }
-
-      return iNaturalistAPI["delete"](endpoint, params, options);
+      return MinkaAPI["delete"]("votes/unvote/annotation/:id", params, options);
     }
   }]);
 
@@ -2172,7 +2160,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Announcement = __webpack_require__(14);
 
@@ -2184,14 +2172,14 @@ var announcements = /*#__PURE__*/function () {
   _createClass(announcements, null, [{
     key: "search",
     value: function search(params, options) {
-      return iNaturalistAPI.get("announcements", params, _objectSpread(_objectSpread({}, options), {}, {
+      return MinkaAPI.get("announcements", params, _objectSpread(_objectSpread({}, options), {}, {
         useAuth: true
       })).then(Announcement.typifyInstanceResponse);
     }
   }, {
     key: "dismiss",
     value: function dismiss(params, options) {
-      return iNaturalistAPI.put("announcements/:id/dismiss", params, options);
+      return MinkaAPI.put("announcements/:id/dismiss", params, options);
     }
   }]);
 
@@ -2271,7 +2259,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var AuthorizedApplication = __webpack_require__(16);
 
@@ -2284,7 +2272,7 @@ var authorizedApplications = /*#__PURE__*/function () {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("authorized_applications", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("authorized_applications", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(AuthorizedApplication.typifyResultsResponse);
     }
@@ -2293,11 +2281,11 @@ var authorizedApplications = /*#__PURE__*/function () {
     value: function _delete(params, options) {
       var endpoint = "oauth/authorized_applications/:id";
 
-      if (iNaturalistAPI.writeApiURL && iNaturalistAPI.writeApiURL.match(/\/v\d/)) {
+      if (MinkaAPI.writeApiURL && MinkaAPI.writeApiURL.match(/\/v\d/)) {
         endpoint = "authorized_applications/:id";
       }
 
-      return iNaturalistAPI["delete"](endpoint, params, options);
+      return MinkaAPI["delete"](endpoint, params, options);
     }
   }]);
 
@@ -2371,7 +2359,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Comment = __webpack_require__(18);
 
@@ -2383,17 +2371,17 @@ var comments = /*#__PURE__*/function () {
   _createClass(comments, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("comments", params, options).then(Comment.typifyInstanceResponse);
+      return MinkaAPI.post("comments", params, options).then(Comment.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("comments/:id", params, options).then(Comment.typifyInstanceResponse);
+      return MinkaAPI.put("comments/:id", params, options).then(Comment.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("comments/:id", params, options);
+      return MinkaAPI["delete"]("comments/:id", params, options);
     }
   }]);
 
@@ -2473,7 +2461,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Taxon = __webpack_require__(20);
 
@@ -2491,11 +2479,11 @@ var computervision = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      options.apiURL = iNaturalistAPI.apiURL; // force the host to be the Node API
+      options.apiURL = MinkaAPI.apiURL; // force the host to be the Node API
 
-      return iNaturalistAPI.upload("computervision/score_image", params, options).then(function (response) {
+      return MinkaAPI.upload("computervision/score_image", params, options).then(function (response) {
         response.results = response.results.map(function (r) {
-          return Object.assign({}, r, {
+          return _objectSpread(_objectSpread({}, r), {}, {
             taxon: new Taxon(r.taxon)
           });
         });
@@ -2511,12 +2499,14 @@ var computervision = /*#__PURE__*/function () {
     key: "score_observation",
     value: function score_observation(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
       // eslint-disable-line camelcase
-      var options = Object.assign({}, opts);
+      var options = _objectSpread({}, opts);
+
       options.useAuth = true;
-      return iNaturalistAPI.get("computervision/score_observation/:id", params, options).then(function (response) {
+      return MinkaAPI.get("computervision/score_observation/:id", params, options).then(function (response) {
         response.results = response.results.map(function (r) {
-          return Object.assign({}, r, {
+          return _objectSpread(_objectSpread({}, r), {}, {
             taxon: new Taxon(r.taxon)
           });
         });
@@ -3057,7 +3047,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ControlledTerm = __webpack_require__(25);
 
@@ -3085,22 +3075,14 @@ var controlledTerms = /*#__PURE__*/function () {
     value: // eslint-disable-line camelcase
     function for_taxon(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
       // eslint-disable-line camelcase
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        var taxonIds = params.taxon_id.toString().split(",").join(",");
-        var newParams = Object.assign({}, params);
-        delete newParams.taxon_id;
-        return iNaturalistAPI.get("controlled_terms/for_taxon/".concat(taxonIds), newParams, opts).then(typifyResponse);
-      }
-
-      return iNaturalistAPI.get("controlled_terms/for_taxon", params, opts).then(typifyResponse);
+      return MinkaAPI.get("controlled_terms/for_taxon", params, opts).then(typifyResponse);
     }
   }, {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("controlled_terms", params, opts).then(typifyResponse);
+      return MinkaAPI.get("controlled_terms", params, opts).then(typifyResponse);
     }
   }]);
 
@@ -3189,7 +3171,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Flag = __webpack_require__(27);
 
@@ -3201,17 +3183,17 @@ var flags = /*#__PURE__*/function () {
   _createClass(flags, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("flags", params, options).then(Flag.typifyInstanceResponse);
+      return MinkaAPI.post("flags", params, options).then(Flag.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("flags/:id", params, options).then(Flag.typifyInstanceResponse);
+      return MinkaAPI.put("flags/:id", params, options).then(Flag.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("flags/:id", params, options);
+      return MinkaAPI["delete"]("flags/:id", params, options);
     }
   }]);
 
@@ -3279,13 +3261,28 @@ module.exports = Flag;
 /* 28 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+var _excluded = ["taxon"],
+    _excluded2 = ["taxon", "identification"],
+    _excluded3 = ["taxon", "identification"],
+    _excluded4 = ["user"];
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Identification = __webpack_require__(29);
 
@@ -3303,29 +3300,36 @@ var identifications = /*#__PURE__*/function () {
   _createClass(identifications, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("identifications", params, options).then(Identification.typifyInstanceResponse);
+      return MinkaAPI.post("identifications", params, options).then(Identification.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("identifications/:id", params, options).then(Identification.typifyInstanceResponse);
+      return MinkaAPI.put("identifications/:id", params, options).then(Identification.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("identifications/:id", params, options);
+      return MinkaAPI["delete"]("identifications/:id", params, options);
     }
   }, {
     key: "similar_species",
-    value: function similar_species(params, opts) {
+    value: function similar_species(params) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
       // eslint-disable-line camelcase
-      var options = Object.assign({}, opts || {});
-      options.useAuth = true;
-      return iNaturalistAPI.get("identifications/similar_species", params, options).then(function (response) {
+      var options = _objectSpread(_objectSpread({}, opts), {}, {
+        useAuth: true
+      });
+
+      return MinkaAPI.get("identifications/similar_species", params, options).then(function (response) {
         if (response.results) {
-          response.results = response.results.map(function (r) {
-            return Object.assign({}, r, {
-              taxon: new Taxon(r.taxon)
+          response.results = response.results.map(function (_ref) {
+            var taxon = _ref.taxon,
+                otherTaxonAttributes = _objectWithoutProperties(_ref, _excluded);
+
+            return _objectSpread(_objectSpread({}, otherTaxonAttributes), {}, {
+              taxon: new Taxon(taxon)
             });
           });
         }
@@ -3337,16 +3341,22 @@ var identifications = /*#__PURE__*/function () {
     key: "recent_taxa",
     value: function recent_taxa(params, opts) {
       // eslint-disable-line camelcase
-      var options = Object.assign({}, opts || {});
+      var options = _objectSpread({}, opts || {});
+
       options.useAuth = true;
-      return iNaturalistAPI.get("identifications/recent_taxa", params, options).then(function (response) {
+      return MinkaAPI.get("identifications/recent_taxa", params, options).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (res) {
             var _r$identification, _r$identification$obs;
 
-            var r = Object.assign({}, res);
-            r.taxon = new Taxon(r.taxon);
-            r.identification = new Identification(r.identification);
+            var taxon = res.taxon,
+                identification = res.identification,
+                otherAttributes = _objectWithoutProperties(res, _excluded2);
+
+            var r = _objectSpread(_objectSpread({}, otherAttributes), {}, {
+              taxon: new Taxon(taxon),
+              identification: new Identification(identification)
+            });
 
             if ((_r$identification = r.identification) !== null && _r$identification !== void 0 && (_r$identification$obs = _r$identification.observation) !== null && _r$identification$obs !== void 0 && _r$identification$obs.identifications) {
               delete r.identification.observation.identifications;
@@ -3364,16 +3374,22 @@ var identifications = /*#__PURE__*/function () {
     key: "recent_taxa_revisited",
     value: function recent_taxa_revisited(params, opts) {
       // eslint-disable-line camelcase
-      var options = Object.assign({}, opts || {});
+      var options = _objectSpread({}, opts || {});
+
       options.useAuth = true;
-      return iNaturalistAPI.get("identifications/recent_taxa_revisited", params, options).then(function (response) {
+      return MinkaAPI.get("identifications/recent_taxa_revisited", params, options).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (res) {
             var _r$identification2, _r$identification2$ob;
 
-            var r = Object.assign({}, res);
-            r.taxon = new Taxon(r.taxon);
-            r.identification = new Identification(r.identification);
+            var taxon = res.taxon,
+                identification = res.identification,
+                otherAttributes = _objectWithoutProperties(res, _excluded3);
+
+            var r = _objectSpread(_objectSpread({}, otherAttributes), {}, {
+              taxon: new Taxon(taxon),
+              identification: new Identification(identification)
+            });
 
             if ((_r$identification2 = r.identification) !== null && _r$identification2 !== void 0 && (_r$identification2$ob = _r$identification2.observation) !== null && _r$identification2$ob !== void 0 && _r$identification2$ob.identifications) {
               delete r.identification.observation.identifications;
@@ -3390,11 +3406,14 @@ var identifications = /*#__PURE__*/function () {
   }, {
     key: "identifiers",
     value: function identifiers(params, options) {
-      return iNaturalistAPI.get("identifications/identifiers", params, options).then(function (response) {
+      return MinkaAPI.get("identifications/identifiers", params, options).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (r) {
-            return Object.assign({}, r, {
-              user: new User(r.user)
+            var user = r.user,
+                otherAttributes = _objectWithoutProperties(r, _excluded4);
+
+            return _objectSpread(_objectSpread({}, otherAttributes), {}, {
+              user: new User(user)
             });
           });
         }
@@ -3406,7 +3425,7 @@ var identifications = /*#__PURE__*/function () {
     key: "categories",
     value: function categories(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("identifications/categories", params, opts);
+      return MinkaAPI.get("identifications/categories", params, opts);
     }
   }]);
 
@@ -3697,13 +3716,19 @@ module.exports = Sound;
 /* 32 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Message = __webpack_require__(33);
 
@@ -3715,39 +3740,48 @@ var messages = /*#__PURE__*/function () {
   _createClass(messages, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("messages", params, options).then(Message.typifyInstanceResponse);
+      return MinkaAPI.post("messages", params, options).then(Message.typifyInstanceResponse);
     }
   }, {
     key: "search",
-    value: function search(params, options) {
-      var opts = Object.assign({}, options, {
+    value: function search(params) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var opts = _objectSpread(_objectSpread({}, options), {}, {
         useWriteApi: true,
         useAuth: true
       });
-      return iNaturalistAPI.get("messages", params, opts).then(Message.typifyResultsResponse);
+
+      return MinkaAPI.get("messages", params, opts).then(Message.typifyResultsResponse);
     }
   }, {
     key: "fetch",
-    value: function fetch(params, options) {
-      var opts = Object.assign({}, options, {
+    value: function fetch(params) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var opts = _objectSpread(_objectSpread({}, options), {}, {
         useWriteApi: true,
         useAuth: true
       });
-      return iNaturalistAPI.get("messages/:id", params, opts).then(Message.typifyResultsResponse);
+
+      return MinkaAPI.get("messages/:id", params, opts).then(Message.typifyResultsResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("messages/:id", params, options);
+      return MinkaAPI["delete"]("messages/:id", params, options);
     }
   }, {
     key: "unread",
-    value: function unread(params, options) {
-      var opts = Object.assign({}, options, {
+    value: function unread(params) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      var opts = _objectSpread(_objectSpread({}, options), {}, {
         useWriteApi: true,
         useAuth: true
       });
-      return iNaturalistAPI.get("messages/count", params, opts);
+
+      return MinkaAPI.get("messages/count", params, opts);
     }
   }]);
 
@@ -3826,7 +3860,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ObservationFieldValue = __webpack_require__(35);
 
@@ -3838,17 +3872,17 @@ var observationFieldValues = /*#__PURE__*/function () {
   _createClass(observationFieldValues, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("observation_field_values", params, options).then(ObservationFieldValue.typifyInstanceResponse);
+      return MinkaAPI.post("observation_field_values", params, options).then(ObservationFieldValue.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("observation_field_values/:id", params, options).then(ObservationFieldValue.typifyInstanceResponse);
+      return MinkaAPI.put("observation_field_values/:id", params, options).then(ObservationFieldValue.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("observation_field_values/:id", params, options);
+      return MinkaAPI["delete"]("observation_field_values/:id", params, options);
     }
   }]);
 
@@ -3916,13 +3950,19 @@ module.exports = ObservationFieldValue;
 /* 36 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var observationPhotos = /*#__PURE__*/function () {
   function observationPhotos() {
@@ -3932,32 +3972,23 @@ var observationPhotos = /*#__PURE__*/function () {
   _createClass(observationPhotos, null, [{
     key: "create",
     value: function create(params, options) {
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/) && !params.file) {
-        // For API v2, observation_photos creation endpoint shouldn't receive a
-        // 'file' input param - however, if we use the 'upload' method, it will
-        // send the POST request as a multipart request, which will
-        // make the server require the file param.
-        return iNaturalistAPI.post("observation_photos", params, options);
-      }
-
-      return iNaturalistAPI.upload("observation_photos", params, options);
+      return MinkaAPI.upload("observation_photos", params, options);
     }
   }, {
     key: "update",
-    value: function update(params, opts) {
-      var options = Object.assign({}, opts);
+    value: function update(params) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        return iNaturalistAPI.put("observation_photos/:id", params, options);
-      }
+      var options = _objectSpread(_objectSpread({}, opts), {}, {
+        method: "PUT"
+      });
 
-      options.method = "PUT";
-      return iNaturalistAPI.upload("observation_photos/:id", params, options);
+      return MinkaAPI.upload("observation_photos/:id", params, options);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("observation_photos/:id", params, options);
+      return MinkaAPI["delete"]("observation_photos/:id", params, options);
     }
   }]);
 
@@ -3970,13 +4001,19 @@ module.exports = observationPhotos;
 /* 37 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var observationSounds = /*#__PURE__*/function () {
   function observationSounds() {
@@ -3986,32 +4023,23 @@ var observationSounds = /*#__PURE__*/function () {
   _createClass(observationSounds, null, [{
     key: "create",
     value: function create(params, options) {
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/) && !params.file) {
-        // For API v2, observation_photos creation endpoint shouldn't receive a
-        // 'file' input param - however, if we use the 'upload' method, it will
-        // send the POST request as a multipart request, which will
-        // make the server require the file param.
-        return iNaturalistAPI.post("observation_sounds", params, options);
-      }
-
-      return iNaturalistAPI.upload("observation_sounds", params, options);
+      return MinkaAPI.upload("observation_sounds", params, options);
     }
   }, {
     key: "update",
-    value: function update(params, opts) {
-      var options = Object.assign({}, opts);
+    value: function update(params) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        return iNaturalistAPI.put("observation_sounds/:id", params, options);
-      }
+      var options = _objectSpread(_objectSpread({}, opts), {}, {
+        method: "PUT"
+      });
 
-      options.method = "PUT";
-      return iNaturalistAPI.upload("observation_sounds/:id", params, options);
+      return MinkaAPI.upload("observation_sounds/:id", params, options);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("observation_sounds/:id", params, options);
+      return MinkaAPI["delete"]("observation_sounds/:id", params, options);
     }
   }]);
 
@@ -4036,7 +4064,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ControlledTerm = __webpack_require__(25);
 
@@ -4056,105 +4084,94 @@ var observations = /*#__PURE__*/function () {
   _createClass(observations, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("observations", params, options).then(Observation.typifyInstanceResponse);
+      return MinkaAPI.post("observations", params, options).then(Observation.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("observations/:id", params, options).then(Observation.typifyInstanceResponse);
+      return MinkaAPI.put("observations/:id", params, options).then(Observation.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("observations/:id", params, options);
+      return MinkaAPI["delete"]("observations/:id", params, options);
     }
   }, {
     key: "fave",
     value: function fave(params, options) {
-      if (!iNaturalistAPI.apiURL || !iNaturalistAPI.apiURL.match(/\/v2/)) {
+      if (!MinkaAPI.apiURL) {
         return observations.vote(params, options);
       }
 
-      return iNaturalistAPI.post("observations/:id/fave", params, options);
+      return MinkaAPI.post("observations/:id/fave", params, options);
     }
   }, {
     key: "unfave",
     value: function unfave(params, options) {
       // return observations.unvote( params, options );
-      if (!iNaturalistAPI.apiURL || !iNaturalistAPI.apiURL.match(/\/v2/)) {
+      if (!MinkaAPI.apiURL) {
         return observations.unvote(params, options);
       }
 
-      return iNaturalistAPI["delete"]("observations/:id/fave", params, options);
+      return MinkaAPI["delete"]("observations/:id/fave", params, options);
     }
   }, {
     key: "vote",
     value: function vote(params, options) {
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        throw new Error("API v2 does not support observations.vote. Use fave or setQualityMetric instead.");
-      }
-
-      return iNaturalistAPI.post("votes/vote/observation/:id", params, options).then(Observation.typifyInstanceResponse);
+      return MinkaAPI.post("votes/vote/observation/:id", params, options).then(Observation.typifyInstanceResponse);
     }
   }, {
     key: "unvote",
     value: function unvote(params, options) {
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        throw new Error("API v2 does not support observations.unvote. Use unfave or deleteQualityMetric instead.");
-      }
-
-      return iNaturalistAPI["delete"]("votes/unvote/observation/:id", params, options);
+      return MinkaAPI["delete"]("votes/unvote/observation/:id", params, options);
     }
   }, {
     key: "subscribe",
     value: function subscribe(params, options) {
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        return iNaturalistAPI.put("observations/:id/subscription", params, options);
-      }
-
-      return iNaturalistAPI.post("subscriptions/Observation/:id/subscribe", params, options);
+      return MinkaAPI.post("subscriptions/Observation/:id/subscribe", params, options);
     }
   }, {
     key: "review",
     value: function review(params, options) {
-      var p = _objectSpread({}, params);
+      var p = _objectSpread(_objectSpread({}, params), {}, {
+        reviewed: "true"
+      });
 
-      p.reviewed = "true";
-      return iNaturalistAPI.post("observations/:id/review", p, options);
+      return MinkaAPI.post("observations/:id/review", p, options);
     }
   }, {
     key: "unreview",
     value: function unreview(params, options) {
       var p = _objectSpread({}, params);
 
-      return iNaturalistAPI["delete"]("observations/:id/review", p, options);
+      return MinkaAPI["delete"]("observations/:id/review", p, options);
     }
   }, {
     key: "qualityMetrics",
     value: function qualityMetrics(params, options) {
-      return iNaturalistAPI.get("observations/:id/quality_metrics", params, options);
+      return MinkaAPI.get("observations/:id/quality_metrics", params, options);
     }
   }, {
     key: "setQualityMetric",
     value: function setQualityMetric(params, options) {
-      return iNaturalistAPI.post("observations/:id/quality/:metric", params, options);
+      return MinkaAPI.post("observations/:id/quality/:metric", params, options);
     }
   }, {
     key: "deleteQualityMetric",
     value: function deleteQualityMetric(params, options) {
-      return iNaturalistAPI["delete"]("observations/:id/quality/:metric", params, options);
+      return MinkaAPI["delete"]("observations/:id/quality/:metric", params, options);
     }
   }, {
     key: "fetch",
     value: function fetch(ids, params) {
       var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return iNaturalistAPI.fetch("observations", ids, params, opts).then(Observation.typifyResultsResponse);
+      return MinkaAPI.fetch("observations", ids, params, opts).then(Observation.typifyResultsResponse);
     }
   }, {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("observations", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(Observation.typifyResultsResponse);
     }
@@ -4162,7 +4179,7 @@ var observations = /*#__PURE__*/function () {
     key: "identifiers",
     value: function identifiers(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/identifiers", params, opts).then(function (response) {
+      return MinkaAPI.get("observations/identifiers", params, opts).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (r) {
             return _objectSpread(_objectSpread({}, r), {}, {
@@ -4178,7 +4195,7 @@ var observations = /*#__PURE__*/function () {
     key: "observers",
     value: function observers(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/observers", params, opts).then(function (response) {
+      return MinkaAPI.get("observations/observers", params, opts).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (r) {
             return _objectSpread(_objectSpread({}, r), {}, {
@@ -4194,7 +4211,7 @@ var observations = /*#__PURE__*/function () {
     key: "speciesCounts",
     value: function speciesCounts(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/species_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("observations/species_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(function (response) {
         if (response.results) {
@@ -4212,7 +4229,7 @@ var observations = /*#__PURE__*/function () {
     key: "iconicTaxaCounts",
     value: function iconicTaxaCounts(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/iconic_taxa_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("observations/iconic_taxa_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(function (response) {
         if (response.results) {
@@ -4230,7 +4247,7 @@ var observations = /*#__PURE__*/function () {
     key: "iconicTaxaSpeciesCounts",
     value: function iconicTaxaSpeciesCounts(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/iconic_taxa_species_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("observations/iconic_taxa_species_counts", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(function (response) {
         if (response.results) {
@@ -4248,7 +4265,7 @@ var observations = /*#__PURE__*/function () {
     key: "popularFieldValues",
     value: function popularFieldValues(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/popular_field_values", params, opts).then(function (response) {
+      return MinkaAPI.get("observations/popular_field_values", params, opts).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (res) {
             var r = _objectSpread({}, res);
@@ -4266,7 +4283,7 @@ var observations = /*#__PURE__*/function () {
     key: "umbrellaProjectStats",
     value: function umbrellaProjectStats(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/umbrella_project_stats", params, opts).then(function (response) {
+      return MinkaAPI.get("observations/umbrella_project_stats", params, opts).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (r) {
             return _objectSpread(_objectSpread({}, r), {}, {
@@ -4282,49 +4299,49 @@ var observations = /*#__PURE__*/function () {
     key: "histogram",
     value: function histogram(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/histogram", params, opts);
+      return MinkaAPI.get("observations/histogram", params, opts);
     }
   }, {
     key: "qualityGrades",
     value: function qualityGrades(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/quality_grades", params, opts);
+      return MinkaAPI.get("observations/quality_grades", params, opts);
     }
   }, {
     key: "subscriptions",
     value: function subscriptions(params) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/:id/subscriptions", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.get("observations/:id/subscriptions", params, MinkaAPI.optionsUseAuth(options));
     }
   }, {
     key: "taxonSummary",
     value: function taxonSummary(params) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/:id/taxon_summary", params, options);
+      return MinkaAPI.get("observations/:id/taxon_summary", params, options);
     }
   }, {
     key: "updates",
     value: function updates(params) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/updates", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.get("observations/updates", params, MinkaAPI.optionsUseAuth(options));
     }
   }, {
     key: "viewedUpdates",
     value: function viewedUpdates(params) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.put("observations/:id/viewed_updates", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.put("observations/:id/viewed_updates", params, MinkaAPI.optionsUseAuth(options));
     }
   }, {
     key: "identificationCategories",
     value: function identificationCategories(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/identification_categories", params, opts);
+      return MinkaAPI.get("observations/identification_categories", params, opts);
     }
   }, {
     key: "taxonomy",
     value: function taxonomy(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/taxonomy", params, opts).then(Taxon.typifyResultsResponse);
+      return MinkaAPI.get("observations/taxonomy", params, opts).then(Taxon.typifyResultsResponse);
     }
   }, {
     key: "similarSpecies",
@@ -4334,7 +4351,7 @@ var observations = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts || {});
 
       options.useAuth = true;
-      return iNaturalistAPI.get("observations/similar_species", params, options).then(function (response) {
+      return MinkaAPI.get("observations/similar_species", params, options).then(function (response) {
         if (response.results) {
           response.results = response.results.map(function (r) {
             return _objectSpread(_objectSpread({}, r), {}, {
@@ -4351,13 +4368,13 @@ var observations = /*#__PURE__*/function () {
     value: function taxa() {
       var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/taxa", params, opts);
+      return MinkaAPI.get("observations/taxa", params, opts);
     }
   }, {
     key: "deleted",
     value: function deleted(params) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("observations/deleted", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.get("observations/deleted", params, MinkaAPI.optionsUseAuth(options));
     }
   }]);
 
@@ -4436,7 +4453,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Photo = __webpack_require__(21);
 
@@ -4448,12 +4465,12 @@ var photos = /*#__PURE__*/function () {
   _createClass(photos, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.upload("photos", params, options);
+      return MinkaAPI.upload("photos", params, options);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("photos/:id", params, options).then(Photo.typifyInstanceResponse);
+      return MinkaAPI.put("photos/:id", params, options).then(Photo.typifyInstanceResponse);
     }
   }]);
 
@@ -4472,7 +4489,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Place = __webpack_require__(42);
 
@@ -4485,35 +4502,19 @@ var places = /*#__PURE__*/function () {
     key: "fetch",
     value: function fetch(ids, params) {
       var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return iNaturalistAPI.fetch("places", ids, params, opts).then(Place.typifyResultsResponse);
+      return MinkaAPI.fetch("places", ids, params, opts).then(Place.typifyResultsResponse);
     }
   }, {
     key: "autocomplete",
     value: function autocomplete(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        throw new Error("API v2 does not support places.autocomplete. Use places.search instead.");
-      }
-
-      return iNaturalistAPI.get("places/autocomplete", params, opts).then(Place.typifyResultsResponse);
-    }
-  }, {
-    key: "search",
-    value: function search(params) {
-      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v1/)) {
-        throw new Error("API v1 does not support places.search. Use places.autocomplete instead.");
-      }
-
-      return iNaturalistAPI.get("places", params, opts).then(Place.typifyResultsResponse);
+      return MinkaAPI.get("places/autocomplete", params, opts).then(Place.typifyResultsResponse);
     }
   }, {
     key: "containing",
     value: function containing(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("places/containing", params, opts).then(Place.typifyResultsResponse);
+      return MinkaAPI.get("places/containing", params, opts).then(Place.typifyResultsResponse);
     }
   }]);
 
@@ -4593,7 +4594,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Post = __webpack_require__(44);
 
@@ -4605,30 +4606,30 @@ var posts = /*#__PURE__*/function () {
   _createClass(posts, null, [{
     key: "search",
     value: function search(params, options) {
-      return iNaturalistAPI.get("posts", params, options).then(Post.typifyArrayResponse);
+      return MinkaAPI.get("posts", params, options).then(Post.typifyArrayResponse);
     }
   }, {
     key: "for_user",
     value: function for_user(params, options) {
       // eslint-disable-line camelcase
-      return iNaturalistAPI.get("posts/for_user", params, _objectSpread(_objectSpread({}, options), {}, {
+      return MinkaAPI.get("posts/for_user", params, _objectSpread(_objectSpread({}, options), {}, {
         useAuth: true
       })).then(Post.typifyArrayResponse);
     }
   }, {
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("posts", params, options).then(Post.typifyInstanceResponse);
+      return MinkaAPI.post("posts", params, options).then(Post.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("posts/:id", params, options).then(Post.typifyInstanceResponse);
+      return MinkaAPI.put("posts/:id", params, options).then(Post.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("posts/:id", params, options);
+      return MinkaAPI["delete"]("posts/:id", params, options);
     }
   }]);
 
@@ -4701,13 +4702,19 @@ module.exports = Post;
 /* 45 */
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Project = __webpack_require__(39);
 
@@ -4719,106 +4726,94 @@ var projects = /*#__PURE__*/function () {
   _createClass(projects, null, [{
     key: "fetch",
     value: function fetch(ids, params) {
-      return iNaturalistAPI.fetch("projects", ids, params).then(Project.typifyResultsResponse);
+      return MinkaAPI.fetch("projects", ids, params).then(Project.typifyResultsResponse);
     }
   }, {
     key: "search",
     value: function search(params, options) {
-      return iNaturalistAPI.get("projects", params, options).then(Project.typifyResultsResponse);
+      return MinkaAPI.get("projects", params, options).then(Project.typifyResultsResponse);
     }
   }, {
     key: "autocomplete",
     value: function autocomplete(params) {
-      return iNaturalistAPI.get("projects/autocomplete", params).then(Project.typifyResultsResponse);
+      return MinkaAPI.get("projects/autocomplete", params).then(Project.typifyResultsResponse);
     }
   }, {
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.upload("projects", params, options).then(Project.typifyInstanceResponse);
+      return MinkaAPI.upload("projects", params, options).then(Project.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.upload("projects/:id", params, Object.assign({}, options, {
+      return MinkaAPI.upload("projects/:id", params, _objectSpread(_objectSpread({}, options), {}, {
         method: "put"
       })).then(Project.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("projects/:id", params, options);
+      return MinkaAPI["delete"]("projects/:id", params, options);
     }
   }, {
     key: "join",
     value: function join(params, options) {
-      var endpoint = "projects/:id/join";
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        endpoint = "projects/:id/membership";
-      }
-
-      return iNaturalistAPI.post(endpoint, params, options);
+      return MinkaAPI.post("projects/:id/join", params, options);
     }
   }, {
     key: "leave",
     value: function leave(params, options) {
-      var endpoint = "projects/:id/leave";
-
-      if (iNaturalistAPI.apiURL && iNaturalistAPI.apiURL.match(/\/v2/)) {
-        endpoint = "projects/:id/membership";
-      }
-
-      return iNaturalistAPI["delete"](endpoint, params, options);
+      return MinkaAPI["delete"]("projects/:id/leave", params, options);
     }
   }, {
     key: "add",
     value: function add(params, options) {
-      return iNaturalistAPI.post("projects/:id/add", params, options);
+      return MinkaAPI.post("projects/:id/add", params, options);
     }
   }, {
     key: "remove",
     value: function remove(params, options) {
-      return iNaturalistAPI["delete"]("projects/:id/remove", params, options);
+      return MinkaAPI["delete"]("projects/:id/remove", params, options);
     }
   }, {
     key: "posts",
     value: function posts(params, options) {
-      return iNaturalistAPI.get("projects/:id/posts", params, options);
+      return MinkaAPI.get("projects/:id/posts", params, options);
     }
   }, {
     key: "subscribe",
     value: function subscribe(params, options) {
-      return iNaturalistAPI.post("subscriptions/Project/:id/subscribe", params, options);
+      return MinkaAPI.post("subscriptions/Project/:id/subscribe", params, options);
     }
   }, {
     key: "subscriptions",
     value: function subscriptions(params, options) {
-      return iNaturalistAPI.get("projects/:id/subscriptions", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.get("projects/:id/subscriptions", params, MinkaAPI.optionsUseAuth(options));
     }
   }, {
     key: "followers",
     value: function followers(params, options) {
-      return iNaturalistAPI.get("projects/:id/followers", params, options);
+      return MinkaAPI.get("projects/:id/followers", params, options);
     }
   }, {
     key: "members",
     value: function members(params, options) {
-      return iNaturalistAPI.get("projects/:id/members", params, options);
+      return MinkaAPI.get("projects/:id/members", params, options);
     }
   }, {
     key: "membership",
     value: function membership(params, options) {
-      return iNaturalistAPI.get("projects/:id/membership", params, iNaturalistAPI.optionsUseAuth(options));
+      return MinkaAPI.get("projects/:id/membership", params, MinkaAPI.optionsUseAuth(options));
     }
   }, {
     key: "feature",
     value: function feature(params, options) {
-      return iNaturalistAPI.put("projects/:id/feature", params, options);
+      return MinkaAPI.put("projects/:id/feature", params, options);
     }
   }, {
     key: "unfeature",
     value: function unfeature(params, options) {
-      return iNaturalistAPI.put("projects/:id/unfeature", params, options);
+      return MinkaAPI.put("projects/:id/unfeature", params, options);
     }
   }]);
 
@@ -4837,7 +4832,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ProjectObservation = __webpack_require__(47);
 
@@ -4849,17 +4844,17 @@ var projectObservations = /*#__PURE__*/function () {
   _createClass(projectObservations, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("project_observations", params, options).then(ProjectObservation.typifyInstanceResponse);
+      return MinkaAPI.post("project_observations", params, options).then(ProjectObservation.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("project_observations/:id", params, options).then(ProjectObservation.typifyInstanceResponse);
+      return MinkaAPI.put("project_observations/:id", params, options).then(ProjectObservation.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("project_observations/:id", params, options);
+      return MinkaAPI["delete"]("project_observations/:id", params, options);
     }
   }]);
 
@@ -4933,7 +4928,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ProjectUser = __webpack_require__(49);
 
@@ -4945,7 +4940,7 @@ var projectUsers = /*#__PURE__*/function () {
   _createClass(projectUsers, null, [{
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("project_users/:id", params, options).then(ProjectUser.typifyInstanceResponse);
+      return MinkaAPI.put("project_users/:id", params, options).then(ProjectUser.typifyInstanceResponse);
     }
   }]);
 
@@ -5025,7 +5020,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var ProviderAuthorization = __webpack_require__(51);
 
@@ -5038,7 +5033,7 @@ var ProviderAuthorizations = /*#__PURE__*/function () {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("provider_authorizations", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("provider_authorizations", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(ProviderAuthorization.typifyResultsResponse);
     }
@@ -5047,11 +5042,11 @@ var ProviderAuthorizations = /*#__PURE__*/function () {
     value: function _delete(params, options) {
       var endpoint = "provider_authorizations/:id";
 
-      if (iNaturalistAPI.writeApiURL && iNaturalistAPI.writeApiURL.match(/\/v\d/)) {
+      if (MinkaAPI.writeApiURL && MinkaAPI.writeApiURL.match(/\/v\d/)) {
         endpoint = "provider_authorizations/:id";
       }
 
-      return iNaturalistAPI["delete"](endpoint, params, options);
+      return MinkaAPI["delete"](endpoint, params, options);
     }
   }]);
 
@@ -5131,7 +5126,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Relationship = __webpack_require__(53);
 
@@ -5143,14 +5138,14 @@ var relationships = /*#__PURE__*/function () {
   _createClass(relationships, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("relationships", params, options).then(Relationship.typifyInstanceResponse);
+      return MinkaAPI.post("relationships", params, options).then(Relationship.typifyInstanceResponse);
     }
   }, {
     key: "search",
     value: function search(params, options) {
       var useWriteApi = false;
 
-      if (iNaturalistAPI.writeApiURL && iNaturalistAPI.writeApiURL.match(/\/v\d/)) {
+      if (MinkaAPI.writeApiURL && MinkaAPI.writeApiURL.match(/\/v\d/)) {
         useWriteApi = true;
       }
 
@@ -5159,17 +5154,17 @@ var relationships = /*#__PURE__*/function () {
         useAuth: true
       });
 
-      return iNaturalistAPI.get("relationships", params, opts).then(Relationship.typifyResultsResponse);
+      return MinkaAPI.get("relationships", params, opts).then(Relationship.typifyResultsResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("relationships/:id", params, options);
+      return MinkaAPI.put("relationships/:id", params, options);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("relationships/:id", params, options);
+      return MinkaAPI["delete"]("relationships/:id", params, options);
     }
   }]);
 
@@ -5260,7 +5255,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Place = __webpack_require__(42);
 
@@ -5280,7 +5275,7 @@ var search = /*#__PURE__*/function () {
     value: function index() {
       var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("search", params, options).then(function (response) {
+      return MinkaAPI.get("search", params, options).then(function (response) {
         if (response.results) {
           response.results.forEach(function (result, index) {
             var instanceAttribute;
@@ -5321,7 +5316,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Site = __webpack_require__(56);
 
@@ -5334,7 +5329,7 @@ var sites = /*#__PURE__*/function () {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("sites", params, opts).then(Site.typifyResultsResponse);
+      return MinkaAPI.get("sites", params, opts).then(Site.typifyResultsResponse);
     }
   }, {
     key: "fetch",
@@ -5342,10 +5337,10 @@ var sites = /*#__PURE__*/function () {
       var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       if (!ids || ids.length === 0) {
-        return iNaturalistAPI.get("sites", params, opts).then(Site.typifyResultsResponse);
+        return MinkaAPI.get("sites", params, opts).then(Site.typifyResultsResponse);
       }
 
-      return iNaturalistAPI.fetch("sites", ids, params, opts).then(Site.typifyResultsResponse);
+      return MinkaAPI.fetch("sites", ids, params, opts).then(Site.typifyResultsResponse);
     }
   }]);
 
@@ -5419,7 +5414,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var sounds = /*#__PURE__*/function () {
   function sounds() {
@@ -5429,7 +5424,7 @@ var sounds = /*#__PURE__*/function () {
   _createClass(sounds, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.upload("sounds", params, options);
+      return MinkaAPI.upload("sounds", params, options);
     }
   }]);
 
@@ -5454,7 +5449,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Taxon = __webpack_require__(20);
 
@@ -5467,7 +5462,7 @@ var taxa = /*#__PURE__*/function () {
     key: "fetch",
     value: function fetch(ids, params) {
       var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return iNaturalistAPI.fetch("taxa", ids, params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.fetch("taxa", ids, params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(Taxon.typifyResultsResponse);
     }
@@ -5475,7 +5470,7 @@ var taxa = /*#__PURE__*/function () {
     key: "search",
     value: function search(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("taxa", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("taxa", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(Taxon.typifyResultsResponse);
     }
@@ -5483,7 +5478,7 @@ var taxa = /*#__PURE__*/function () {
     key: "autocomplete",
     value: function autocomplete(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("taxa/autocomplete", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("taxa/autocomplete", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(Taxon.typifyResultsResponse);
     }
@@ -5491,7 +5486,7 @@ var taxa = /*#__PURE__*/function () {
     key: "suggest",
     value: function suggest(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("taxa/suggest", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("taxa/suggest", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(function (response) {
         response.results = response.results.map(function (r) {
@@ -5507,7 +5502,7 @@ var taxa = /*#__PURE__*/function () {
     value: function lifelist_metadata(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       // eslint-disable-line camelcase
-      return iNaturalistAPI.get("taxa/lifelist_metadata", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("taxa/lifelist_metadata", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(Taxon.typifyResultsResponse);
     }
@@ -5515,7 +5510,7 @@ var taxa = /*#__PURE__*/function () {
     key: "wanted",
     value: function wanted(params) {
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("taxa/:id/wanted", params, _objectSpread(_objectSpread({}, opts), {}, {
+      return MinkaAPI.get("taxa/:id/wanted", params, _objectSpread(_objectSpread({}, opts), {}, {
         useAuth: true
       })).then(function (response) {
         return Taxon.typifyResultsResponse(response);
@@ -5538,7 +5533,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var TaxonNamePriority = __webpack_require__(60);
 
@@ -5550,17 +5545,17 @@ var taxonNamePriorities = /*#__PURE__*/function () {
   _createClass(taxonNamePriorities, null, [{
     key: "create",
     value: function create(params, options) {
-      return iNaturalistAPI.post("taxon_name_priorities", params, options).then(TaxonNamePriority.typifyInstanceResponse);
+      return MinkaAPI.post("taxon_name_priorities", params, options).then(TaxonNamePriority.typifyInstanceResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.put("taxon_name_priorities/:id", params, options).then(TaxonNamePriority.typifyInstanceResponse);
+      return MinkaAPI.put("taxon_name_priorities/:id", params, options).then(TaxonNamePriority.typifyInstanceResponse);
     }
   }, {
     key: "delete",
     value: function _delete(params, options) {
-      return iNaturalistAPI["delete"]("taxon_name_priorities/:id", params, options);
+      return MinkaAPI["delete"]("taxon_name_priorities/:id", params, options);
     }
   }]);
 
@@ -5634,7 +5629,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var translations = /*#__PURE__*/function () {
   function translations() {
@@ -5646,7 +5641,7 @@ var translations = /*#__PURE__*/function () {
     value: function locales() {
       var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return iNaturalistAPI.get("translations/locales", params, options);
+      return MinkaAPI.get("translations/locales", params, options);
     }
   }]);
 
@@ -5671,7 +5666,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var iNaturalistAPI = __webpack_require__(1);
+var MinkaAPI = __webpack_require__(1);
 
 var Project = __webpack_require__(39);
 
@@ -5687,12 +5682,12 @@ var users = /*#__PURE__*/function () {
     value: function fetch(ids) {
       var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return iNaturalistAPI.fetch("users", ids, params, opts).then(User.typifyResultsResponse);
+      return MinkaAPI.fetch("users", ids, params, opts).then(User.typifyResultsResponse);
     }
   }, {
     key: "update",
     value: function update(params, options) {
-      return iNaturalistAPI.upload("users/:id", params, _objectSpread(_objectSpread({}, options), {}, {
+      return MinkaAPI.upload("users/:id", params, _objectSpread(_objectSpread({}, options), {}, {
         method: "put"
       })).then(User.typifyInstanceResponse);
     }
@@ -5700,7 +5695,7 @@ var users = /*#__PURE__*/function () {
     key: "update_session",
     value: function update_session(params, options) {
       // eslint-disable-line camelcase
-      return iNaturalistAPI.put("users/update_session", params, options);
+      return MinkaAPI.put("users/update_session", params, options);
     }
   }, {
     key: "me",
@@ -5717,7 +5712,7 @@ var users = /*#__PURE__*/function () {
       }
 
       options.useAuth = true;
-      return iNaturalistAPI.get("users/me", params, options).then(User.typifyResultsResponse);
+      return MinkaAPI.get("users/me", params, options).then(User.typifyResultsResponse);
     }
   }, {
     key: "mute",
@@ -5727,7 +5722,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI.post("users/:id/mute", params, options);
+      return MinkaAPI.post("users/:id/mute", params, options);
     }
   }, {
     key: "unmute",
@@ -5737,7 +5732,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI["delete"]("users/:id/mute", params, options);
+      return MinkaAPI["delete"]("users/:id/mute", params, options);
     }
   }, {
     key: "block",
@@ -5747,7 +5742,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI.post("users/:id/block", params, options);
+      return MinkaAPI.post("users/:id/block", params, options);
     }
   }, {
     key: "unblock",
@@ -5757,7 +5752,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI["delete"]("users/:id/block", params, options);
+      return MinkaAPI["delete"]("users/:id/block", params, options);
     }
   }, {
     key: "projects",
@@ -5767,7 +5762,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI.get("users/:id/projects", params, options).then(Project.typifyResultsResponse);
+      return MinkaAPI.get("users/:id/projects", params, options).then(Project.typifyResultsResponse);
     }
   }, {
     key: "resendConfirmation",
@@ -5777,7 +5772,7 @@ var users = /*#__PURE__*/function () {
       var options = _objectSpread({}, opts);
 
       options.useAuth = true;
-      return iNaturalistAPI.post("users/resend_confirmation", params, options);
+      return MinkaAPI.post("users/resend_confirmation", params, options);
     }
   }]);
 
